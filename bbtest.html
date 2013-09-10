@@ -1,0 +1,209 @@
+<html>
+    <head>
+        <title>40</title>
+        <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.css">
+        <script  type="text/javascript" src="../jquery/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="../backbone/underscore-min.js"></script>
+        <script type="text/javascript" src="../backbone/backbone.js"></script>
+       
+
+        
+       
+    </head>
+    <body>
+    <div class = "container">
+    <img src = "hisbanner.png">
+    <h2>After School Activity (ASA) Sign-up</h2>
+   
+    
+        <div id="main"></div>
+    </body>
+</html>
+
+
+ <script type="text/template" id="loginBox">
+  Please enter your information below:
+<form class="form-horizontal">
+  <div class="control-group">
+    <label class="control-label" for="inputParentID">Parent Username</label>
+    <div class="controls">
+      <h2><input type="text" id="inputParent" placeholder="Parent Username" ></h2>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="studentID">Your child's ID number:</label>
+    <div class="controls">
+      <input type="text" id="studentID" placeholder="Student ID Number" >
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
+      
+      <button class="btn" id = "submit"><a href = "#waiting">Sign in</a></button>
+    </div>
+  </div>
+</form>
+ </script>
+   
+<script type="text/template" id="waiting">
+<h3> Please wait while we load your records.</h3>
+<div class="controls">
+      
+      <button class="btn" id = "next"><a href = "#selection">Next</a></button>
+    </div>
+ </script>
+
+<script type="text/template" id="selection">
+<h4>The available activities for each day are listed below. Please select the activities your child would like to attend. Only one activity per day will be recorded.</h4>
+
+
+ </script>
+
+
+
+<script>
+
+        (function($){
+		
+		
+		  Activity = Backbone.Model.extend({
+		  
+		  defaults: {
+		  
+		  "id":'',
+		  "grades":[9,12],
+		  "name":'Activity Name',
+		  "desc":'This activity does not have a description',
+		  "atCapacity": false  
+		  
+		  }
+		  		  
+		  });
+
+		  activityDay = Backbone.Collection.extend({
+		  
+		  Model: Activity,
+		  url: '#'
+		  
+		  });
+
+
+		  Student = Backbone.Model.extend({
+		  
+		  defaults = {
+		  "studentID" : '',
+		  "DOB":'',
+		  "parentID":'',
+		  "activities":[0,0,0,0,0]		  
+		  }
+		  
+		  
+		  
+		  });
+
+
+          loginView = Backbone.View.extend({
+          el: '#main',
+          
+          initialize: function(){
+          
+          this.template = _.template($('#loginBox').html());
+          this.render();
+          
+          },
+          
+          render: function(){
+          this.$el.empty();
+          this.$el.append(this.template());
+          return this;
+          
+          
+          }
+            
+          });
+          
+          
+          waitingView = Backbone.View.extend({
+          
+          el: '#main',
+          
+          initialize: function(){
+          
+          this.template = _.template($('#waiting').html());
+          this.render();
+          
+          },
+          
+          render: function(){
+          
+          this.$el.empty();
+          this.$el.append(this.template());
+          return this;
+          
+          }
+          
+          
+          });
+          
+          selectionView = Backbone.View.extend({
+          
+          el: '#main',
+          
+          initialize: function(){
+          
+          this.template = _.template($('#selection').html());
+          this.render();
+          
+          },
+          
+          render: function(){
+          
+          this.$el.empty();
+          this.$el.append(this.template());
+          return this;
+          
+          }
+          
+          
+          });
+          
+          
+          AppRouter = Backbone.Router.extend({
+
+            routes:{
+                "":"home",
+                "waiting":"waiting",
+                "selection":"selection"
+                
+            },
+
+            home:function() {
+              console.log('login');
+              new loginView();
+            },
+
+            waiting:function() {
+              console.log('waiting');
+              new waitingView();
+            },
+            
+            selection:function() {
+              console.log('selection');
+              new selectionView();
+            }
+
+          });
+
+        })(jQuery);
+
+$(document).ready(function(){
+
+
+approuter = new AppRouter();
+Backbone.history.start();
+
+
+
+});
+
+</script>
