@@ -1,6 +1,10 @@
 <html>
     <head>
+<<<<<<< HEAD
         <title>HIS After School Activity (ASA) Sign-up</title>
+=======
+        <title>HIS ASA Sign-Up</title>
+>>>>>>> 56f35fa66111a8ef0e4927ed8acb633e5a5f922b
         <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.css">
         <link rel="stylesheet" type="text/css" href="../bootstrap/js/bootstrap.js">
         <script  type="text/javascript" src="../jquery/jquery-1.7.2.min.js"></script>
@@ -32,6 +36,7 @@ background:#EBA100
     </body>
 </html>
 
+//Below is the template for parents to enter authentication information for their child. I'm also thinking of adding a DOB field here.
 
 
 
@@ -60,8 +65,23 @@ background:#EBA100
   <button id = "signIn" >Sign in</button>
   </form>
  </script>
+<<<<<<< HEAD
    
 
+=======
+
+
+//The next template fills the #main div while waiting to hear back from the server on whether or not records were found matching
+the parentID/studentID combination. If so, the server should send back a JS array with five objects, one for each day of the week.*/
+
+<script type="text/template" id="waiting">
+<h3> Please wait while we load your records.</h3>
+<div class="controls">
+      
+      <button class="btn" id = "next"><a href = "#selection">Next</a></button>
+    </div>
+ </script>
+>>>>>>> 56f35fa66111a8ef0e4927ed8acb633e5a5f922b
 
 <script type="text/template" id="selection">
 <h4>The available activities for each day are listed below. Please click on an activity to add your child to the sign-up list. Only one activity per day will be recorded.</h4>
@@ -70,12 +90,19 @@ background:#EBA100
 
 <div class = "activityView">
 
+<<<<<<< HEAD
 </div>
 
  </script>
+=======
+//This is where I would iterate over each activityDay collection element and show the available activities and their attributes.
+//An HTML option element would be included next to each one so that parents could only select one at a time.
+//I also can imagine a view here that shows which activities have been selected for each day. This clearly isn't here.
+>>>>>>> 56f35fa66111a8ef0e4927ed8acb633e5a5f922b
 
 <script type = "text/template" id = "activity-container">
 
+<<<<<<< HEAD
 <div class = "activity-container">
 <div class = "row">
 <div class = "span4"><h3><%= name %></h3></div>
@@ -86,18 +113,39 @@ background:#EBA100
 </div>
 
 </script>
+=======
+ </script>
+>>>>>>> 56f35fa66111a8ef0e4927ed8acb633e5a5f922b
 
 <script>
 
         (function($){
 		
-		
+		  //
 		  Activity = Backbone.Model.extend({
 		  
+<<<<<<< HEAD
   		  
 		  });
 
 		  Activities = Backbone.Collection.extend({
+=======
+		  defaults: {
+		  
+		  "id":'',
+		  "grades":[9,12], //This lists which grades 
+		  "name":'Activity Name',
+		  "desc":'This activity does not have a description',
+		  "atCapacity": false  
+		  
+		  }
+		  		  
+		  });
+			
+		  //There will be one activityDay for each day M - F. It will have all of the activities that match the grade level for the student identified by the authentication information.		
+			
+		  activityDay = Backbone.Collection.extend({
+>>>>>>> 56f35fa66111a8ef0e4927ed8acb633e5a5f922b
 		  
 		  model: Activity,
 		  url: '#'
@@ -107,6 +155,17 @@ background:#EBA100
 
 		  Student = Backbone.Model.extend({
 		  
+<<<<<<< HEAD
+=======
+		  defaults = {
+		  "studentID" : '',
+		  "DOB":'',
+		  "grade": -10,	//Leave default grade as -10 to indicate that the grade hasn't been set. Actual grades range from -3 to 12.
+		  "parentID":'',
+		  "activities":[0,0,0,0,0]	//This array will hold the ID numbers of the activities the student has selected		  
+		  }
+		  
+>>>>>>> 56f35fa66111a8ef0e4927ed8acb633e5a5f922b
 		  
 		  
 		  });
