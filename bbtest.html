@@ -1,65 +1,91 @@
 <html>
     <head>
-        <title>40</title>
+        <title>HIS After School Activity (ASA) Sign-up</title>
         <link rel="stylesheet" type="text/css" href="../bootstrap/css/bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="../bootstrap/js/bootstrap.js">
         <script  type="text/javascript" src="../jquery/jquery-1.7.2.min.js"></script>
         <script type="text/javascript" src="../backbone/underscore-min.js"></script>
         <script type="text/javascript" src="../backbone/backbone.js"></script>
-       
 
-        
+
+<style>
+
+.selected{
+
+background:#EBA100
+
+
+}
+
+</style>
+
        
     </head>
     <body>
-    <div class = "container">
+    <div class = "container-fluid">
     <img src = "hisbanner.png">
     <h2>After School Activity (ASA) Sign-up</h2>
    
     
         <div id="main"></div>
+    </div>
     </body>
 </html>
 
 
+
+
  <script type="text/template" id="loginBox">
-  Please enter your information below:
+ Please enter your information below:
 <form class="form-horizontal">
   <div class="control-group">
     <label class="control-label" for="inputParentID">Parent Username</label>
     <div class="controls">
-      <h2><input type="text" id="inputParent" placeholder="Parent Username" ></h2>
+      <h2><input type="text" id="inputParent" placeholder="Parent Username" value = "11115"></h2>
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="studentID">Your child's ID number:</label>
     <div class="controls">
-      <input type="text" id="studentID" placeholder="Student ID Number" >
+      <input type="text" id="studentID" placeholder="Student ID Number" value = "11112">
     </div>
   </div>
+
   <div class="control-group">
     <div class="controls">
       
-      <button class="btn" id = "submit"><a href = "#waiting">Sign in</a></button>
+      
     </div>
   </div>
-</form>
+  <button id = "signIn" >Sign in</button>
+  </form>
  </script>
    
-<script type="text/template" id="waiting">
-<h3> Please wait while we load your records.</h3>
-<div class="controls">
-      
-      <button class="btn" id = "next"><a href = "#selection">Next</a></button>
-    </div>
- </script>
+
 
 <script type="text/template" id="selection">
-<h4>The available activities for each day are listed below. Please select the activities your child would like to attend. Only one activity per day will be recorded.</h4>
+<h4>The available activities for each day are listed below. Please click on an activity to add your child to the sign-up list. Only one activity per day will be recorded.</h4>
 
+
+
+<div class = "activityView">
+
+</div>
 
  </script>
 
+<script type = "text/template" id = "activity-container">
 
+<div class = "activity-container">
+<div class = "row">
+<div class = "span4"><h3><%= name %></h3></div>
+<div class = "span8"><h4><%= desc %></h4></div>
+</div>
+
+</div>
+</div>
+
+</script>
 
 <script>
 
@@ -68,34 +94,18 @@
 		
 		  Activity = Backbone.Model.extend({
 		  
-		  defaults: {
-		  
-		  "id":'',
-		  "grades":[9,12],
-		  "name":'Activity Name',
-		  "desc":'This activity does not have a description',
-		  "atCapacity": false  
-		  
-		  }
-		  		  
+  		  
 		  });
 
-		  activityDay = Backbone.Collection.extend({
+		  Activities = Backbone.Collection.extend({
 		  
-		  Model: Activity,
+		  model: Activity,
 		  url: '#'
 		  
 		  });
 
 
 		  Student = Backbone.Model.extend({
-		  
-		  defaults = {
-		  "studentID" : '',
-		  "DOB":'',
-		  "parentID":'',
-		  "activities":[0,0,0,0,0]		  
-		  }
 		  
 		  
 		  
@@ -123,27 +133,7 @@
           });
           
           
-          waitingView = Backbone.View.extend({
-          
-          el: '#main',
-          
-          initialize: function(){
-          
-          this.template = _.template($('#waiting').html());
-          this.render();
-          
-          },
-          
-          render: function(){
-          
-          this.$el.empty();
-          this.$el.append(this.template());
-          return this;
-          
-          }
-          
-          
-          });
+      
           
           selectionView = Backbone.View.extend({
           
@@ -154,12 +144,25 @@
           this.template = _.template($('#selection').html());
           this.render();
           
+          
           },
           
           render: function(){
           
           this.$el.empty();
           this.$el.append(this.template());
+          this.monday = new activityView();
+          this.monday.render('Monday');
+           this.tuesday = new activityView();
+          this.tuesday.render('Tuesday');
+          this.wednesday = new activityView();
+          this.wednesday.render('Wednesday');
+           this.thursday = new activityView();
+          this.thursday.render('Thursday');
+          this.friday = new activityView();
+          this.friday.render('Friday');
+          
+          
           return this;
           
           }
@@ -167,13 +170,58 @@
           
           });
           
+          activityView = Backbone.View.extend({
+          
+            el: ".activityView",
+            
+            initialize: function() {
+              this.template = _.template($('#activity-container').html());
+              
+            },
+
+            render: function(selectedDay) {
+              var el = this.$el,
+                  template = this.template;
+
+            
+              
+              todayActivities = activities.where({day:selectedDay});
+              
+              el.append("<h2>"+ selectedDay + "</h2>")
+             
+              if(todayActivities.length>0){
+                        
+                        
+              
+              for(var i=0;i<todayActivities.length;i++){
+              
+                el.append(template(todayActivities[i].toJSON()));
+                
+              }
+			 
+			  }
+			  else{
+			  
+			  el.append("<p class = 'text-error'>No activities are available on this day for your child's grade level.</p>")
+			  
+			  }
+			  el.append("<hr>")
+              return this;
+            }
+   
+          });
+         
+
+          
+          
+       
+          
           
           AppRouter = Backbone.Router.extend({
 
             routes:{
                 "":"home",
-                "waiting":"waiting",
-                "selection":"selection"
+              "selection":"selection"
                 
             },
 
@@ -182,25 +230,120 @@
               new loginView();
             },
 
-            waiting:function() {
-              console.log('waiting');
-              new waitingView();
-            },
-            
+                      
             selection:function() {
               console.log('selection');
               new selectionView();
             }
 
           });
+     
+
+student1 = new Student({
+"studentID":11112,
+"parentID":11115
+});
+
+activity1 = new Activity({
+ 
+		  "id":127,
+		  "grades":[9,12],
+		  "name":'Spacecraft Piloting',
+		  "desc":'Students will learn the basics of piloting an X-class star fighter. Students will need to bring their own craft to school to participate and park in the hangar by Hang-Er-Zhong.',
+		  "atCapacity": false,
+		  "day": "Monday"  
+
+});
+activity2 = new Activity({
+ 
+		  "id":128,
+		  "grades":[3,5],
+		  "name":'Reptilian Chess',
+		  "desc":'In this action packed activity, students will apply their knowledge of chess to manage the antics of reptiles. Snake venom kits will be distributed to all students.',
+		  "atCapacity": false,
+		   "day": "Tuesday"   
+
+});
+activity3 = new Activity({
+ 
+		  "id":121,
+		  "grades":[2,5],
+		  "name":'Soap Carving',
+		  "desc":'Each student will learn to whittle away flakes from a bar of soap to reveal the artistry within. Students should bring a bar of soap with them to each session. Good, clean fun!',
+		  "atCapacity": false ,
+		   "day": "Tuesday"  
+
+});
+activity4 = new Activity({
+ 
+		  "id":125,
+		  "grades":[4,6],
+		  "name":'Building Forts',
+		  "desc":'Using cardboard boxes, sheets, and as much yarn as we can find on campus, we will be building habitable buildings in which to survive the coming zombie apocalypse. Bring scotch tape.',
+		  "atCapacity": false ,
+		   "day": "Tuesday"  
+
+});
+activity5 = new Activity({
+		  "id":131,
+		  "grades":[-1,1],
+		  "name":'Color Appreciation',
+		  "desc":'We will sort all inanimate objects on campus by color and line them up on the soccer field. By the end of the activity, we should have a rainbow of items that will photograph well for the Google Earth satellites.',
+		  "atCapacity": false ,
+		   "day": "Thursday"  
+
+
+
+});
+
+activities = new Activities();
+
+activities.add([activity1,activity2,activity3,activity4,activity5]);
+
+
+
 
         })(jQuery);
 
 $(document).ready(function(){
 
 
+
 approuter = new AppRouter();
 Backbone.history.start();
+$('#signIn').click(function(){
+
+parentID = $('#inputParent').val();
+studentID = $('#studentID').val();
+$('#inputParent').addClass("disabled");
+
+if(parentID == student1.get("parentID") && studentID == student1.get("studentID")){
+
+	approuter.navigate('selection')
+}
+
+else{
+
+
+		
+}
+
+
+
+});
+
+$('.row').click(function(){
+
+    if ($(this).hasClass('selected')) {
+        $(this).removeClass('selected');
+    } else {
+    	
+        $(this).parent().children('.selected').removeClass('selected')
+        $(this).addClass('selected');
+    }
+
+});
+
 
 
 
